@@ -1,6 +1,6 @@
 <template>
   <div v-if="property" class="p-6 max-w-3xl mx-auto">
-    <MapViewMap :properties=[property] :zoomLevel="4" :center="property.geometry.coordinates">
+    <MapViewMap :properties=[property] :zoomLevel="4" :center="property.geometry.coordinates as [number, number]">
 
     </MapViewMap>
     <h1 class="text-2xl font-bold mb-4">{{ property.name }}</h1>

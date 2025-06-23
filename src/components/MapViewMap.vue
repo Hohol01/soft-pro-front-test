@@ -5,36 +5,34 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from 'vue'
 import {useRouter} from 'vue-router'
-import maplibregl, {Map, Marker} from 'maplibre-gl'
+import maplibregl, {type LngLatLike, Map, Marker} from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
-import {usePropertiesStore} from '@/stores/properties'
 import type {Property} from "@/types/property.ts";
 
 const mapContainer = ref<HTMLElement | null>(null)
-const map = ref<Map | null>(null)
-const markers = ref<Marker[]>([])
+let map: Map;
+let markers: Marker[] = []
 
-const store = usePropertiesStore()
 const router = useRouter()
 
 const props = withDefaults(
-  defineProps<{
-    properties: Property[],
-    center?: [number, number],
-    zoomLevel?: number
-  }>(),
-  {
-    center: () => [30.5234, 50.4501], //kiev
-    zoomLevel: 1
-  }
+    defineProps<{
+      properties: Property[],
+      center?: [number, number],
+      zoomLevel?: number
+    }>(),
+    {
+      center: () => [30.5234, 50.4501], //kiev
+      zoomLevel: 1
+    }
 )
 
 onMounted(() => {
-  map.value = new maplibregl.Map({
+  map = new maplibregl.Map({
     container: mapContainer.value as HTMLElement,
     style: 'https://demotiles.maplibre.org/style.json',
-    center: props.center,
+    center: props.center as LngLatLike,
     zoom: props.zoomLevel
   })
 
@@ -44,25 +42,26 @@ onMounted(() => {
 
 function addMarkers() {
   // Видалити старі
-  markers.value.forEach(m => m.remove())
-  markers.value = []
+  markers.forEach(marker => marker.remove())
+  markers = []
 
   props.properties.forEach(property => {
     const marker = new maplibregl.Marker()
-        .setLngLat(property.geometry.coordinates)
+        .setLngLat(property.geometry.coordinates as [number, number])
         .setPopup(new maplibregl.Popup({offset: 25}).setText(property.name))
-        .addTo(map.value)
+        .addTo(map)
 
     marker.getElement().addEventListener('click', () => {
       router.push(`/property/${property.id}`)
     })
 
-    markers.value.push(marker)
+    markers.push(marker)
   })
+
 }
 
 watch(() => props.properties, () => {
-  if (map.value) {
+  if (map) {
     addMarkers()
   }
 }, {deep: true})
