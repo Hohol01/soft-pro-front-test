@@ -3,8 +3,8 @@
     <input
         v-model="store.searchQuery"
         type="text"
-        placeholder="Пошук..."
-        class="w-full mb-4 p-2 border rounded"
+        placeholder="Пошук за назвою або локацією..."
+        class="w-full mb-4 p-2 border border-gray-300 rounded"
     />
 
     <div class="relative min-h-[300px]">
@@ -20,6 +20,9 @@
           />
         </div>
       </transition>
+      <div v-if="store.totalPages===0">
+        Об'єктів не знайдено
+      </div>
     </div>
 
     <div class="mt-6">
@@ -40,24 +43,23 @@ import PropertyCard from '@/components/PropertyCard.vue'
 import Pagination from '@/components/Pagination.vue'
 
 const store = usePropertiesStore()
-const previousPage = ref(store.currentPage)
+
 const slideDirection = ref<'slide-left' | 'slide-right'>('slide-left')
+const previousPage = ref(store.currentPage)
 
 function handlePageChange(newPage: number) {
-  slideDirection.value = newPage > store.currentPage ? 'slide-left' : 'slide-right'
-  previousPage.value = store.currentPage
-  store.currentPage = newPage
+  slideDirection.value = newPage > previousPage.value ? 'slide-left' : 'slide-right'
+  previousPage.value = newPage
 }
 </script>
 
 <style scoped>
+/* Анімація ВЛІВО */
 .slide-left-enter-active,
-.slide-right-enter-active,
 .slide-left-leave-active,
+.slide-right-enter-active,
 .slide-right-leave-active {
   transition: all 0.3s ease;
-  position: absolute;
-  width: 100%;
 }
 
 .slide-left-enter-from {
@@ -69,6 +71,7 @@ function handlePageChange(newPage: number) {
   transform: translateX(-100%);
 }
 
+/* Анімація ВПРАВО */
 .slide-right-enter-from {
   opacity: 0;
   transform: translateX(-100%);
