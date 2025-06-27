@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
-import { usePropertiesStore } from '@/stores/properties'
+import { usePropertiesStore } from '@/stores/properties.ts'
 import MapViewMap from '@/components/MapViewMap.vue'
 
 const route = useRoute()

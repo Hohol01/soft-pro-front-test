@@ -1,13 +1,18 @@
 import {createRouter, createWebHistory, type RouteRecordRaw} from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import PropertyView from '@/views/PropertyView.vue'
-import MapView from '@/views/MapView.vue'
+import PropertyView from '@/pages/PropertyView.vue'
+import MapView from "@/pages/MapView.vue";
+import LayoutView from "@/layouts/LayoutView.vue";
+import HomeView from "@/views/HomeView.vue";
+import CardsList from "@/components/CardsList.vue";
+import SettingsMain from "@/components/SettingsMain.vue";
+
+
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
-    component: HomeView
+    component: LayoutView
   },
   {
     path: '/property/:id',
